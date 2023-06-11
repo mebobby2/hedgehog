@@ -8,4 +8,4 @@ iex -S mix
 
 ## Upto
 
-https://book.elixircryptobot.com/create-a-naive-trading-strategy---a-single-trader-process-without-supervision.html
+https://book.elixircryptobot.com/create-a-naive-trading-strategy---a-single-trader-process-without-supervision.html#implementation-of-the-third-scenario
