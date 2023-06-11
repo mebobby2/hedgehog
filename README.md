@@ -1,4 +1,7 @@
 # Hedgehog
 
-**TODO: Add description**
+## Install
+mix deps.get
 
+## Play
+iex -S mix
