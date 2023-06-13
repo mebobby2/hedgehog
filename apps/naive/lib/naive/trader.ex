@@ -81,17 +81,17 @@ defmodule Naive.Trader do
   end
 
   def handle_cast(
-    %TradeEvent{
-      seller_order_id: order_id,
-      quantity: quantity
-    },
-    %State{
-      sell_order: %Binance.OrderResponse{
-        order_id: order_id,
-        orig_qty: quantity
-      }
-    } = state
-  ) do
+        %TradeEvent{
+          seller_order_id: order_id,
+          quantity: quantity
+        },
+        %State{
+          sell_order: %Binance.OrderResponse{
+            order_id: order_id,
+            orig_qty: quantity
+          }
+        } = state
+      ) do
     Logger.info("Trade finished, trader will now exit")
     {:stop, :normal, state}
   end
