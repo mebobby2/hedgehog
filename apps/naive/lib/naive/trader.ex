@@ -1,7 +1,6 @@
 defmodule Naive.Trader do
   use GenServer
 
-  alias Streamer.Binance
   alias Decimal, as: D
   alias Streamer.Binance.TradeEvent
 
@@ -54,7 +53,7 @@ defmodule Naive.Trader do
 
   def handle_cast(
         %TradeEvent{
-          buy_order_id: order_id,
+          buyer_order_id: order_id,
           quantity: quantity
         },
         %State{
@@ -79,6 +78,26 @@ defmodule Naive.Trader do
       Binance.order_limit_sell(symbol, quantity, sell_price, "GTC")
 
     {:noreply, %{state | sell_order: order}}
+  end
+
+  def handle_cast(
+    %TradeEvent{
+      seller_order_id: order_id,
+      quantity: quantity
+    },
+    %State{
+      sell_order: %Binance.OrderResponse{
+        order_id: order_id,
+        orig_qty: quantity
+      }
+    } = state
+  ) do
+    Logger.info("Trade finished, trader will now exit")
+    {:stop, :normal, state}
+  end
+
+  def handle_cast(%TradeEvent{}, state) do
+    {:noreply, state}
   end
 
   defp fetch_tick_size(symbol) do
