@@ -8,4 +8,4 @@ iex -S mix
 
 ## Upto
 
-https://book.elixircryptobot.com/introduce-pubsub-as-a-communication-method.html#implementation
+https://book.elixircryptobot.com/mock-the-binance-api.html
