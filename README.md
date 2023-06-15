@@ -8,4 +8,4 @@ iex -S mix
 
 ## Upto
 
-https://book.elixircryptobot.com/mock-the-binance-api.html#implement-getting-exchange-info
+https://book.elixircryptobot.com/mock-the-binance-api.html#implement-order-retrival
