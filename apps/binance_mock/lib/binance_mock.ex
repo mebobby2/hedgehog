@@ -105,6 +105,10 @@ defmodule BinanceMock do
         %OrderBook{}
       )
 
+    #Logger.info("-----------------order_book----------------")
+    #Logger.info(order_book)
+    #Logger.info("event price = #{trade_event.price}")
+
     filled_buy_orders =
       order_book.buy_side
       |> Enum.take_while(&D.lt?(trade_event.price, &1.price))
