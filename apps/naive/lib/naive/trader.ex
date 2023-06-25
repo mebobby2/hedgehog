@@ -6,9 +6,10 @@ defmodule Naive.Trader do
 
   require Logger
 
+  @binance_client Application.compile_env(:naive, :binance_client)
+
   defmodule State do
     @enforce_keys [:symbol, :profit_interval, :tick_size]
-
     defstruct [
       :symbol,
       :buy_order,
@@ -51,7 +52,7 @@ defmodule Naive.Trader do
     Logger.info("Placing BUY order for #{symbol} @ #{price}, quantity: #{quantity}")
 
     {:ok, %Binance.OrderResponse{} = order} =
-      Binance.order_limit_buy(symbol, quantity, price, "GTC")
+      @binance_client.order_limit_buy(symbol, quantity, price, "GTC")
 
     {:noreply, %{state | buy_order: order}}
   end
@@ -80,7 +81,7 @@ defmodule Naive.Trader do
     )
 
     {:ok, %Binance.OrderResponse{} = order} =
-      Binance.order_limit_sell(symbol, quantity, sell_price, "GTC")
+      @binance_client.order_limit_sell(symbol, quantity, sell_price, "GTC")
 
     {:noreply, %{state | sell_order: order}}
   end
@@ -105,19 +106,8 @@ defmodule Naive.Trader do
     {:noreply, state}
   end
 
-  defp fetch_tick_size(symbol) do
-    Binance.get_exchange_info()
-    |> elem(1)
-    |> Map.get(:symbols)
-    |> Enum.find(&(&1["symbol"] == symbol))
-    |> Map.get("filters")
-    |> Enum.find(&(&1["filterType"] == "PRICE_FILTER"))
-    |> Map.get("tickSize")
-  end
-
   defp calculate_sell_price(buy_price, profit_interval, tick_size) do
     fee = "1.001"
-
     original_price = D.mult(buy_price, fee)
 
     net_target_price =
@@ -135,5 +125,15 @@ defmodule Naive.Trader do
       ),
       :normal
     )
+  end
+
+  defp fetch_tick_size(symbol) do
+    @binance_client.get_exchange_info()
+    |> elem(1)
+    |> Map.get(:symbols)
+    |> Enum.find(&(&1["symbol"] == symbol))
+    |> Map.get("filters")
+    |> Enum.find(&(&1["filterType"] == "PRICE_FILTER"))
+    |> Map.get("tickSize")
   end
 end
